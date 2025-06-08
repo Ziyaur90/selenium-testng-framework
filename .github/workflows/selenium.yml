@@ -24,10 +24,7 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y google-chrome-stable unzip
-        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+' | head -1)
-        echo "Chrome major version: $CHROME_VERSION"
-        wget -q https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION
-        VERSION=$(cat LATEST_RELEASE_$CHROME_VERSION)
+        VERSION=$(wget -q -O - https://chromedriver.storage.googleapis.com/LATEST_RELEASE)
         echo "ChromeDriver version to install: $VERSION"
         wget https://chromedriver.storage.googleapis.com/$VERSION/chromedriver_linux64.zip
         unzip chromedriver_linux64.zip
@@ -35,11 +32,13 @@ jobs:
         sudo chmod +x /usr/local/bin/chromedriver
         chromedriver --version
 
-    - name: Cache Maven
+    - name: Cache Maven packages
       uses: actions/cache@v4
       with:
         path: ~/.m2
         key: maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          maven-
 
     - name: Run tests with Maven
       run: |
@@ -47,7 +46,7 @@ jobs:
         Xvfb :99 -screen 0 1920x1080x24 &
         mvn clean test
 
-    - name: Upload Extent Report
+    - name: Upload Extent Reports
       uses: actions/upload-artifact@v4
       with:
         name: ExtentReports
