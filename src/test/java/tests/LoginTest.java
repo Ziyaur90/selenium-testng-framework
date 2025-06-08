@@ -5,12 +5,12 @@ import org.testng.Assert;
 
 import com.aventstack.extentreports.Status;
 import com.wipro.selenium.pages.LoginPage;
-import com.wipro.selenium.utils.Base;
+import com.wipro.selenium.utils.Base2;
 import com.wipro.selenium.utils.ExcelUtils;
 import com.wipro.selenium.utils.ExtentUtil;
 import com.wipro.selenium.utils.Utility;
 
-public class LoginTest extends Base {
+public class LoginTest extends Base2 {
 
     Utility util = new Utility();
     ExcelUtils excel;

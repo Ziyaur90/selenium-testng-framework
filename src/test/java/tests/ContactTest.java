@@ -6,11 +6,11 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 import com.aventstack.extentreports.Status;
 import com.wipro.selenium.pages.ContactPage;
-import com.wipro.selenium.utils.Base;
+import com.wipro.selenium.utils.Base2;
 import com.wipro.selenium.utils.ExtentUtil;
 import com.wipro.selenium.utils.Utility;
 
-public class ContactTest extends Base {
+public class ContactTest extends Base2 {
 
     Utility util = new Utility();
 

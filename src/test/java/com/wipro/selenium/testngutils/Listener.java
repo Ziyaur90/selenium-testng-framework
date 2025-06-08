@@ -1,7 +1,7 @@
 package com.wipro.selenium.testngutils;
 
 import com.aventstack.extentreports.Status;
-import com.wipro.selenium.utils.Base;
+import com.wipro.selenium.utils.Base2;
 import com.wipro.selenium.utils.ExtentUtil;
 import com.wipro.selenium.utils.Utility;
 
@@ -34,7 +34,7 @@ public class Listener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
         ExtentUtil.getTest().log(Status.FAIL, "Test failed: " + result.getThrowable().getMessage());
-        WebDriver driver = ((Base) result.getInstance()).driver;
+        WebDriver driver = ((Base2) result.getInstance()).driver;
         String screenshot = new Utility().takeScreenshotPath(driver, result.getName());
         try {
             ExtentUtil.getTest().addScreenCaptureFromPath(screenshot);
