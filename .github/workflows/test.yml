@@ -1,0 +1,37 @@
+name: Run Selenium TestNG Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: ⬇️ Checkout code
+      uses: actions/checkout@v3
+
+    - name: ☕ Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: 🧱 Setup Maven
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: '3.8.7'
+
+    - name: 🧪 Run TestNG tests with Maven
+      run: |
+        mvn clean test -Dsurefire.suiteXmlFiles=testng.xml
+
+    - name: 📤 Upload Extent Report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: ExtentReport
+        path: reports/
