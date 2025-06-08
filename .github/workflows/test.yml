@@ -1,35 +1,37 @@
-name: Run Selenium TestNG Tests
+name: Selenium TestNG CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: ⬇️ Checkout code
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-    - name: ☕ Setup Java
+    - name: Set up Java
       uses: actions/setup-java@v3
       with:
-        distribution: 'temurin'
-        java-version: '17'
+        distribution: temurin
+        java-version: 17
 
-    - name: 🧱 Setup Maven
-      uses: stCarolas/setup-maven@v4
+    - name: Cache Maven packages
+      uses: actions/cache@v3
       with:
-        maven-version: '3.8.7'
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
 
-    - name: 🧪 Run TestNG tests with Maven
-      run: |
-        mvn clean test -Dsurefire.suiteXmlFiles=testng.xml
+    - name: Install Chrome for Selenium
+      uses: browser-actions/setup-chrome@latest
 
-    - name: 📤 Upload Extent Report
+    - name: Build & run tests
+      run: mvn clean test -Dsurefire.suiteXmlFiles=testng.xml
+
+    - name: Upload ExtentReports
       if: always()
       uses: actions/upload-artifact@v3
       with:
