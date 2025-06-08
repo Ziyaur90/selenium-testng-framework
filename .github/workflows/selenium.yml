@@ -22,13 +22,14 @@ jobs:
 
     - name: Install Chrome & ChromeDriver
       run: |
-        sudo apt-get update
-        sudo apt-get install -y google-chrome-stable unzip
-        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+')
-        echo "Chrome version detected: $CHROME_VERSION"
-        LATEST_CHROMEDRIVER_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}")
-        echo "ChromeDriver version to install: $LATEST_CHROMEDRIVER_VERSION"
-        wget -q "https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
+        sudo apt update
+        sudo apt install -y google-chrome-stable unzip
+        CHROME_VERSION=$(google-chrome --version | grep -oP '\d+' | head -1)
+        echo "Chrome major version: $CHROME_VERSION"
+        wget -q https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION
+        VERSION=$(cat LATEST_RELEASE_$CHROME_VERSION)
+        echo "ChromeDriver version to install: $VERSION"
+        wget https://chromedriver.storage.googleapis.com/$VERSION/chromedriver_linux64.zip
         unzip chromedriver_linux64.zip
         sudo mv chromedriver /usr/local/bin/
         sudo chmod +x /usr/local/bin/chromedriver
@@ -41,7 +42,10 @@ jobs:
         key: maven-${{ hashFiles('**/pom.xml') }}
 
     - name: Run tests with Maven
-      run: mvn clean test
+      run: |
+        export DISPLAY=:99
+        Xvfb :99 -screen 0 1920x1080x24 &
+        mvn clean test
 
     - name: Upload Extent Report
       uses: actions/upload-artifact@v4
